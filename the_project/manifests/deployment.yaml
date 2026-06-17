@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleserver-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simpleserver
+  template:
+    metadata:
+      labels:
+        app: simpleserver
+    spec:
+      containers:
+        - name: simpleserver
+          image: domantas231/the-project:1.1
