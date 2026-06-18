@@ -14,4 +14,7 @@ spec:
     spec:
       containers:
         - name: simpleserver
-          image: domantas231/the-project:1.1
+          image: domantas231/the-project:1.5
+          env:
+            - name: PORT
+              value: "3000"
