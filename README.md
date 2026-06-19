@@ -9,3 +9,4 @@
 - [1.7](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/1.7)
 - [1.8](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/1.8)
 - [1.9](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/1.9)
+- [1.10](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/1.10)

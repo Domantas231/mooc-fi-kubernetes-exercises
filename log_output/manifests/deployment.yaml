@@ -12,6 +12,23 @@ spec:
       labels:
         app: hashgenerator
     spec:
+      volumes:
+        - name: shared-image
+          emptyDir: {}
       containers:
-        - name: hashgenerator
-          image: domantas231/log-output:1.7
+        - name: hashwriter
+          image: domantas231/log-writer:1.10
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
+          env:
+            - name: LOG_FILE
+              value: "/usr/src/app/files/log_output.txt"
+        - name: hashreader
+          image: domantas231/log-reader:1.10
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
+          env:
+            - name: LOG_FILE
+              value: "/usr/src/app/files/log_output.txt"
