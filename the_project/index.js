@@ -55,6 +55,51 @@ const page = `<!DOCTYPE html>
       font-weight: 500;
       margin: 1.5rem 0 0;
     }
+    .todo-form {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.5rem 0 0;
+    }
+    .todo-form input {
+      flex: 1;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font: inherit;
+      color: inherit;
+    }
+    .todo-form input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    .todo-form button {
+      padding: 0.65rem 1.25rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: #6366f1;
+      color: #fff;
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .todo-form button:hover {
+      background: #4f46e5;
+    }
+    .todos {
+      list-style: none;
+      margin: 1.5rem 0 0;
+      padding: 0;
+      text-align: left;
+    }
+    .todos li {
+      padding: 0.75rem 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      background: #fafafa;
+    }
   </style>
 </head>
 <body>
@@ -62,6 +107,15 @@ const page = `<!DOCTYPE html>
     <h1>Todo App</h1>
     <img src="/image.jpg" alt="Random image">
     <p class="subtitle">DevOps with Kubernetes 2026</p>
+    <form class="todo-form">
+      <input type="text" name="todo" placeholder="What needs doing?" maxlength="140" aria-label="New todo">
+      <button type="submit">Send</button>
+    </form>
+    <ul class="todos">
+      <li>Learn Kubernetes basics</li>
+      <li>Set up the project deployment</li>
+      <li>Add a persistent volume for the image cache</li>
+    </ul>
   </main>
 </body>
 </html>

@@ -18,7 +18,7 @@ spec:
             claimName: image-claim
       containers:
         - name: simpleserver
-          image: domantas231/the-project:1.12
+          image: domantas231/the-project:1.13
           volumeMounts:
             - name: shared-image
               mountPath: /usr/src/app/files
