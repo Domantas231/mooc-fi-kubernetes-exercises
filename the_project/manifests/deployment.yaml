@@ -12,9 +12,18 @@ spec:
       labels:
         app: simpleserver
     spec:
+      volumes:
+        - name: shared-image
+          persistentVolumeClaim:
+            claimName: image-claim
       containers:
         - name: simpleserver
-          image: domantas231/the-project:1.5
+          image: domantas231/the-project:1.12
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
           env:
             - name: PORT
               value: "3000"
+            - name: IMAGE_PATH
+              value: "/usr/src/app/files/image.jpg"
