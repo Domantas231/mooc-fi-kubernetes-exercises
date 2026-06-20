@@ -12,26 +12,11 @@ spec:
       labels:
         app: hashgenerator
     spec:
-      volumes:
-        - name: shared-image
-          persistentVolumeClaim:
-            claimName: image-claim
       containers:
-        - name: hashwriter
-          image: domantas231/log-writer:1.10
-          volumeMounts:
-            - name: shared-image
-              mountPath: /usr/src/app/files
+        - name: hashgenerator
+          image: domantas231/log-output:2.1
           env:
-            - name: LOG_FILE
-              value: "/usr/src/app/files/log_output.txt"
-        - name: hashreader
-          image: domantas231/log-reader:1.11
-          volumeMounts:
-            - name: shared-image
-              mountPath: /usr/src/app/files
-          env:
-            - name: LOG_FILE
-              value: "/usr/src/app/files/log_output.txt"
-            - name: COUNTER_FILE
-              value: "/usr/src/app/files/counter.txt"
+            - name: PORT
+              value: "3000"
+            - name: PINGS_URL
+              value: "http://pingpong-svc:2345/pings"

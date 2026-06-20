@@ -16,9 +16,9 @@ function readCounter() {
   }
 }
 
-function writeCounter(value) {
-  fs.writeFileSync(COUNTER_FILE, String(value));
-}
+// function writeCounter(value) {
+//   fs.writeFileSync(COUNTER_FILE, String(value));
+// }
 
 let counter = readCounter();
 
@@ -27,7 +27,13 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end(`pong ${counter}`);
     counter += 1;
-    writeCounter(counter);
+    // writeCounter(counter);
+    return;
+  }
+
+  if (req.url === '/pings') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end(`${counter}`);
     return;
   }
 

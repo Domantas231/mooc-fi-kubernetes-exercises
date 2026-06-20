@@ -12,16 +12,16 @@ spec:
       labels:
         app: pingpong
     spec:
-      volumes:
-        - name: shared-image
-          persistentVolumeClaim:
-            claimName: image-claim
+    #  volumes:
+    #    - name: shared-image
+    #      persistentVolumeClaim:
+    #        claimName: image-claim
       containers:
         - name: pingpong
-          image: domantas231/ping-pong:1.11
-          volumeMounts:
-            - name: shared-image
-              mountPath: /usr/src/app/files
+          image: domantas231/ping-pong:2.1
+    #      volumeMounts:
+    #        - name: shared-image
+    #          mountPath: /usr/src/app/files
           env:
             - name: LOG_FILE
               value: "/usr/src/app/files/log_output.txt"
