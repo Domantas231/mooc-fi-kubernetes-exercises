@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simpleserver-dep
+  name: todo-app-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: simpleserver
+      app: todo-app
   template:
     metadata:
       labels:
-        app: simpleserver
+        app: todo-app
     spec:
       volumes:
         - name: shared-image
           persistentVolumeClaim:
             claimName: image-claim
       containers:
-        - name: simpleserver
-          image: domantas231/the-project:1.13
+        - name: todo-app
+          image: domantas231/todo-app:2.2
           volumeMounts:
             - name: shared-image
               mountPath: /usr/src/app/files

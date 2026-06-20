@@ -17,3 +17,4 @@
 ### Chapter 3
 
 - [2.1](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/2.1)
+- [2.2](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/2.2)

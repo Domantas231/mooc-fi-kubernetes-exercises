@@ -107,16 +107,43 @@ const page = `<!DOCTYPE html>
     <h1>Todo App</h1>
     <img src="/image.jpg" alt="Random image">
     <p class="subtitle">DevOps with Kubernetes 2026</p>
-    <form class="todo-form">
-      <input type="text" name="todo" placeholder="What needs doing?" maxlength="140" aria-label="New todo">
+    <form class="todo-form" id="todo-form">
+      <input type="text" name="todo" id="todo-input" placeholder="What needs doing?" maxlength="140" aria-label="New todo">
       <button type="submit">Send</button>
     </form>
-    <ul class="todos">
-      <li>Learn Kubernetes basics</li>
-      <li>Set up the project deployment</li>
-      <li>Add a persistent volume for the image cache</li>
-    </ul>
+    <ul class="todos" id="todos"></ul>
   </main>
+  <script>
+    const list = document.getElementById('todos');
+    const form = document.getElementById('todo-form');
+    const input = document.getElementById('todo-input');
+
+    async function loadTodos() {
+      const response = await fetch('/todos');
+      const todos = await response.json();
+      list.replaceChildren();
+      for (const todo of todos) {
+        const li = document.createElement('li');
+        li.textContent = todo.text;
+        list.appendChild(li);
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      await fetch('/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ todo: text }),
+      });
+      input.value = '';
+      await loadTodos();
+    });
+
+    loadTodos();
+  </script>
 </body>
 </html>
 `;
@@ -145,14 +172,16 @@ async function refreshIfNeeded() {
 }
 
 const server = http.createServer(async (req, res) => {
-  if (req.url === '/') {
+  const url = req.url.split('?')[0];
+
+  if (url === '/' && req.method === 'GET') {
     await refreshIfNeeded();
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(page);
     return;
   }
 
-  if (req.url === '/image.jpg') {
+  if (url === '/image.jpg' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'image/jpeg' });
     res.end(await fs.readFile(IMAGE_PATH));
     return;
@@ -163,5 +192,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server started in port ${PORT}`);
+  console.log(`todo-app started in port ${PORT}`);
 });
