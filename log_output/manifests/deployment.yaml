@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: hashgenerator
-          image: domantas231/log-output:2.5
+          image: domantas231/log-output:3.22
+          imagePullPolicy: Always
           env:
             - name: PORT
               valueFrom:

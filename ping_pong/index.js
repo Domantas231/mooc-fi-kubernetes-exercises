@@ -56,6 +56,12 @@ async function getCount() {
 
 const server = http.createServer(async (req, res) => {
   try {
+    if (req.url === '/') {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end();
+      return;
+    }
+
     if (req.url === '/pingpong') {
       const value = await incrementAndGet();
       res.writeHead(200, { 'Content-Type': 'text/plain' });

@@ -5,7 +5,7 @@ metadata:
   name: logoutput-configmap
 data:
   port: "3000"
-  pings_url: "http://pingpong-svc:2345/pings"
+  pings_url: "http://pingpong-svc:80/pings"
   message: "Hello world"
   information_file: "/config/information"
   information: |
