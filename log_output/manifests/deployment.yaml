@@ -15,9 +15,36 @@ spec:
     spec:
       containers:
         - name: hashgenerator
-          image: domantas231/log-output:2.1
+          image: domantas231/log-output:2.5
           env:
             - name: PORT
-              value: "3000"
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-configmap
+                  key: port
             - name: PINGS_URL
-              value: "http://pingpong-svc:2345/pings"
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-configmap
+                  key: pings_url
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-configmap
+                  key: message
+            - name: INFORMATION_FILE
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-configmap
+                  key: information_file
+          volumeMounts:
+          - name: config
+            mountPath: "/config"
+            readOnly: true
+      volumes:
+      - name: config
+        configMap: 
+          name: logoutput-configmap
+          items:
+            - key: "information"
+              path: "information"

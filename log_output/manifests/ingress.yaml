@@ -8,9 +8,16 @@ spec:
     - http:
         paths:
         - path: / 
-          pathType: Prefix
+          pathType: Exact
           backend:
             service:
               name: hashgenerator-svc
+              port:
+                number: 2345
+        - path: /pingpong 
+          pathType: Prefix
+          backend:
+            service:
+              name: pingpong-svc
               port:
                 number: 2345
