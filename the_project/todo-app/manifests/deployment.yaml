@@ -19,12 +19,23 @@ spec:
             claimName: image-claim
       containers:
         - name: todo-app
-          image: domantas231/todo-app:2.2
+          image: domantas231/todo-app:2.6
           volumeMounts:
             - name: shared-image
               mountPath: /usr/src/app/files
           env:
             - name: PORT
-              value: "3000"
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: port
             - name: IMAGE_PATH
-              value: "/usr/src/app/files/image.jpg"
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: image_path
+            - name: TIME_MS
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: time_ms

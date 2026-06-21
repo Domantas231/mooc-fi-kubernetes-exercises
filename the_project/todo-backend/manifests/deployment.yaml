@@ -18,4 +18,7 @@ spec:
           image: domantas231/todo-backend:2.2
           env:
             - name: PORT
-              value: "3000"
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: port

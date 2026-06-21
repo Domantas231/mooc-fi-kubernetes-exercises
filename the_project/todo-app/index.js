@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 // point at a mounted volume in Kubernetes.
 const IMAGE_PATH = process.env.IMAGE_PATH || path.join(__dirname, 'image.jpg');
 
-const TIME_MS = 10 * 60 * 1000;
+const TIME_MS = process.env.TIME_MS || 10 * 60 * 1000;
 
 const page = `<!DOCTYPE html>
 <html lang="en">

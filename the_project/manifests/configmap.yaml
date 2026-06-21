@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: project
+  name: project-config
+data:
+  port: "3000"
+  image_path: "/usr/src/app/files/image.jpg"
+  time_ms: "600000"
