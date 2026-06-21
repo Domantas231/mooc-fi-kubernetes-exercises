@@ -1,0 +1,12 @@
+{
+  "name": "todo-backend",
+  "version": "1.0.0",
+  "description": "Todo backend for the DevOps with Kubernetes project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}

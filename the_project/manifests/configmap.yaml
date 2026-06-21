@@ -7,3 +7,6 @@ data:
   port: "3000"
   image_path: "/usr/src/app/files/image.jpg"
   time_ms: "600000"
+  postgres_host: "database-svc.project"
+  postgres_db: "the-project"
+  postgres_port: "5432"

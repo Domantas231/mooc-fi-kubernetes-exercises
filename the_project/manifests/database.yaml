@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: project
+  name: database
+spec: 
+  serviceName: database-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: databaseapp
+  template:
+    metadata:
+      labels:
+        app: databaseapp
+    spec:
+      containers:
+        - name: databaseapp
+          image: postgres:18-alpine
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: postgres_db
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-login
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-login
+                  key: postgres_password
+          volumeMounts:
+            - name: database-storage
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: database-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 100Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: project
+  name: database-svc
+  labels:
+    app: database
+spec:
+  ports:
+    - port: 5432
+      name: web
+  clusterIP: None
+  selector:
+    app: databaseapp

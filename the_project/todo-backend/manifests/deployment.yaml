@@ -15,10 +15,35 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: domantas231/todo-backend:2.2
+          image: domantas231/todo-backend:2.8
           env:
             - name: PORT
               valueFrom:
                 configMapKeyRef:
                   name: project-config
                   key: port
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: postgres_host
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: postgres_db
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: project-config
+                  key: postgres_port
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-login
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-login
+                  key: postgres_password

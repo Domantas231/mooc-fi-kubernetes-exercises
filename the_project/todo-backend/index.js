@@ -1,4 +1,5 @@
 const http = require('http');
+const { Pool } = require('pg');
 
 const PORT = process.env.PORT || 3000;
 
@@ -6,13 +7,46 @@ const PORT = process.env.PORT || 3000;
 // against a client streaming an unbounded payload at us.
 const MAX_BODY_BYTES = 1e6;
 
-// In-memory todo store. We'll swap this for a database later.
-const todos = [
-  { id: 1, text: 'Learn Kubernetes basics' },
-  { id: 2, text: 'Set up the project deployment' },
-  { id: 3, text: 'Add a persistent volume for the image cache' },
-];
-let nextId = todos.length + 1;
+// Postgres connection pool, configured from individual environment variables
+// (wired up from a ConfigMap and Secret in the manifests), matching the
+// ping-pong app's approach.
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST,
+  port: process.env.POSTGRES_PORT || 5432,
+  database: process.env.POSTGRES_DB,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+});
+
+const INIT_RETRY_DELAY_MS = 5000;
+
+// Creates the todos table if it does not exist yet. Run once on startup.
+async function initDb() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS todos (
+      id SERIAL PRIMARY KEY,
+      text TEXT NOT NULL
+    );
+  `);
+}
+
+// Retries the initial connection/migration forever so the backend can start
+// before Postgres is ready (common during a fresh cluster rollout).
+async function initDbWithRetry() {
+  for (;;) {
+    try {
+      await initDb();
+      console.log('Database initialized');
+      return;
+    } catch (error) {
+      console.error(
+        `Database not ready, retrying in ${INIT_RETRY_DELAY_MS}ms:`,
+        error.message
+      );
+      await new Promise((resolve) => setTimeout(resolve, INIT_RETRY_DELAY_MS));
+    }
+  }
+}
 
 function sendJson(res, status, payload) {
   res.writeHead(status, { 'Content-Type': 'application/json' });
@@ -35,6 +69,11 @@ function readBody(req) {
   });
 }
 
+async function listTodos(res) {
+  const { rows } = await pool.query('SELECT id, text FROM todos ORDER BY id');
+  sendJson(res, 200, rows);
+}
+
 async function createTodo(req, res) {
   let parsed;
   try {
@@ -51,26 +90,35 @@ async function createTodo(req, res) {
     return;
   }
 
-  const todo = { id: nextId++, text };
-  todos.push(todo);
+  const { rows } = await pool.query(
+    'INSERT INTO todos (text) VALUES ($1) RETURNING id, text',
+    [text]
+  );
   console.log(`Created todo: ${text}`);
-  sendJson(res, 201, todo);
+  sendJson(res, 201, rows[0]);
 }
 
 const server = http.createServer(async (req, res) => {
-  if (req.url === '/todos' && req.method === 'GET') {
-    sendJson(res, 200, todos);
-    return;
-  }
+  try {
+    if (req.url === '/todos' && req.method === 'GET') {
+      await listTodos(res);
+      return;
+    }
 
-  if (req.url === '/todos' && req.method === 'POST') {
-    await createTodo(req, res);
-    return;
-  }
+    if (req.url === '/todos' && req.method === 'POST') {
+      await createTodo(req, res);
+      return;
+    }
 
-  sendJson(res, 404, { error: 'Not found' });
+    sendJson(res, 404, { error: 'Not found' });
+  } catch (err) {
+    console.error(`Request failed: ${err.message}`);
+    sendJson(res, 500, { error: 'Internal server error' });
+  }
 });
 
-server.listen(PORT, () => {
-  console.log(`todo-backend started in port ${PORT}`);
+initDbWithRetry().then(() => {
+  server.listen(PORT, () => {
+    console.log(`todo-backend started in port ${PORT}`);
+  });
 });
