@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: project
+  name: add-random-todo
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: add-random-todoapp
+              image: domantas231/add-random-todo:2.9
+          restartPolicy: Never
+
