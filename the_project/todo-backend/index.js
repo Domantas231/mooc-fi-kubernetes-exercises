@@ -18,6 +18,9 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
 });
 
+// Maximum length of a single todo's text, enforced on create.
+const MAX_TODO_LENGTH = 140;
+
 const INIT_RETRY_DELAY_MS = 5000;
 
 // Creates the todos table if it does not exist yet. Run once on startup.
@@ -87,6 +90,14 @@ async function createTodo(req, res) {
   const text = typeof parsed.todo === 'string' ? parsed.todo.trim() : '';
   if (!text) {
     sendJson(res, 400, { error: 'todo must be a non-empty string' });
+    return;
+  }
+
+  if (text.length > MAX_TODO_LENGTH) {
+    sendJson(res, 400, {
+      error: `todo must be ${MAX_TODO_LENGTH} characters or fewer`,
+    });
+    console.error(`todo must be ${MAX_TODO_LENGTH} characters or fewer`)
     return;
   }
 
