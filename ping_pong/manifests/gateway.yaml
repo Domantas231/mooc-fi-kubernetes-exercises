@@ -1,0 +1,52 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  namespace: exercises
+  name: my-gateway
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  namespace: exercises
+  name: pingpong-route
+spec:
+  parentRefs:
+  - name: my-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /pingpong
+    backendRefs:
+    - name: pingpong-svc
+      port: 80
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  namespace: exercises
+  name: hashgenerator-route
+spec:
+  parentRefs:
+  - name: my-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: hashgenerator-svc
+      port: 80

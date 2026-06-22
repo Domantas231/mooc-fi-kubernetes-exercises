@@ -33,7 +33,6 @@ async function initDbWithRetry() {
       console.log('Database initialized');
       return;
     } catch (error) {
-      console.log(process.env)
       console.error(`Database not ready, retrying in ${INIT_RETRY_DELAY_MS}ms:`, error.message);
       await new Promise((resolve) => setTimeout(resolve, INIT_RETRY_DELAY_MS));
     }

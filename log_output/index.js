@@ -22,24 +22,14 @@ function currentStatus() {
   return `${new Date().toISOString()}: ${randomString}`;
 }
 
-function fetchPingCount() {
-  return new Promise((resolve) => {
-    http
-      .get(PINGS_URL, (pingRes) => {
-        if (pingRes.statusCode !== 200) {
-          pingRes.resume();
-          resolve('N/A');
-          return;
-        }
-
-        let body = '';
-        pingRes.on('data', (chunk) => {
-          body += chunk;
-        });
-        pingRes.on('end', () => resolve(body.trim() || 'N/A'));
-      })
-      .on('error', () => resolve('N/A'));
-  });
+async function fetchPingCount() {
+  try {
+    const res = await fetch(PINGS_URL);
+    if (!res.ok) return 'N/A';
+    return (await res.text()).trim() || 'N/A';
+  } catch {
+    return 'N/A';
+  }
 }
 
 function logStatus() {
