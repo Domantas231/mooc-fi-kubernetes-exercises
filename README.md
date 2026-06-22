@@ -32,3 +32,4 @@
 - [3.1](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/3.1)
 - [3.2](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/3.2)
 - [3.3](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/3.3)
+- [3.4](https://github.com/Domantas231/mooc-fi-kubernetes-exercises/tree/3.4)
